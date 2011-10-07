@@ -1,0 +1,39 @@
+This file contains message digests of all files listed in MANIFEST,
+signed via the Module::Signature module, version 0.68.
+
+To verify the content in this distribution, first make sure you have
+Module::Signature installed, then type:
+
+    % cpansign -v
+
+It will check each file's integrity, as well as the signature's
+validity.  If "==> Signature verified OK! <==" is not displayed,
+the distribution may already have been compromised, and you should
+not run its Makefile.PL or Build.PL.
+
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
+
+SHA1 57fd2180b828486fa098fd63bc32b15ac4db1fd9 Build.PL
+SHA1 56969dd729d79f2c3b7b421a12aef0fb5d1350b2 CHANGES
+SHA1 6e0ef6fd898cfeca712579753b0a69161dbabde9 LICENSE
+SHA1 b53ca2d1b2a990dc02f445fbf5d98519ea52365b MANIFEST
+SHA1 8e124c0594c8321ac7a86c2c1a46f466350106f5 META.json
+SHA1 d90f6f286255ab2ea19baa4a4de0f03fad2c0204 META.yml
+SHA1 0c7d3f27dcb6893ca984e0412ee89fa11c78ea8d README
+SHA1 c839ee14f7ee26366c6a4db3dc454e5301c95297 inc/Devel/CheckLib.pm
+SHA1 d892c7420ded5fddd5530f1bb9e0065de35e1270 lib/Archive/Peek/Libarchive.pm
+SHA1 e6daf6b61b9906dcf1ed02e1a6a87c518843574d lib/Archive/Peek/Libarchive.xs
+SHA1 fc2ccef7b2a9a8686652e554b1318a781263faad lib/Archive/Peek/ppport.h
+SHA1 d2565abae28cda3ac37b79cc38ac780870224f63 t/archive.tar.bz2
+SHA1 bb676bad66d662bf721423172141552ed3f5510b t/archive.tgz
+SHA1 90aa2f4056bba3c375dbbf0dd11b2597d3a0ae87 t/archive.zip
+SHA1 cc0afecfd4e6d03574131fe90200652ddf0fb752 t/pod.t
+SHA1 d9dbda286ac3f27edd7305391484562843057476 t/simple.t
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.11 (GNU/Linux)
+
+iEYEARECAAYFAk6O3u0ACgkQnvdMljFk9hUoPgCeMf+zOD9XA8nWFKEPWp3hpG0N
+MjQAoIvSezFy0HGIoDf//Bmo8xC+llwY
+=W0yT
+-----END PGP SIGNATURE-----

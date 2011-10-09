@@ -34,7 +34,7 @@
    "provides" : {
       "Archive::Peek::Libarchive" : {
          "file" : "lib/Archive/Peek/Libarchive.pm",
-         "version" : "0.36"
+         "version" : "0.37"
       }
    },
    "release_status" : "stable",
@@ -44,5 +44,5 @@
          "http://dev.perl.org/licenses/"
       ]
    },
-   "version" : "0.36"
+   "version" : "0.37"
 }

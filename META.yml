@@ -16,11 +16,11 @@ name: Archive-Peek-Libarchive
 provides:
   Archive::Peek::Libarchive:
     file: lib/Archive/Peek/Libarchive.pm
-    version: 0.36
+    version: 0.37
 requires:
   Object::Tiny: 0
   Test::More: 0
 resources:
   homepage: http://search.cpan.org/dist/Archive-Peek-Libarchive/
   license: http://dev.perl.org/licenses/
-version: 0.36
+version: 0.37

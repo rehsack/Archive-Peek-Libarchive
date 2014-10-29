@@ -1,0 +1,163 @@
+#!perl
+use strict;
+use warnings;
+
+# use lib qw(inc);
+use Config::AutoConf;
+use ExtUtils::MakeMaker;
+use File::Basename;
+use File::Spec;
+use Text::ParseWords;
+
+my %RUN_DEPS = (
+    'Object::Tiny'   => 0,
+    'XSLoader'       => 0,
+);
+my %CONFIGURE_DEPS = (
+    'ExtUtils::MakeMaker' => 0,
+    'Capture::Tiny'       => '0.06',
+    'ExtUtils::CBuilder'  => '0.27',
+    'Config::AutoConf'    => '0.23',
+    'File::Basename'      => 0,
+    'File::Spec'          => 0,
+    'parent'              => 0,
+);
+my %BUILD_DEPS = ();
+
+my %TEST_DEPS = (
+    'Test::More' => 0.90,
+);
+
+my $autoconf = Config::AutoConf->new();
+my @epf = @{ $autoconf->{extra_preprocess_flags} };
+$autoconf->pkg_config_package_flags( "libarchive" );
+if( scalar @{ $autoconf->{extra_preprocess_flags} } == scalar @epf )
+{
+    my $la_incdir = Config::AutoConf::_pkg_config_flag( qw(libarchive --variable includedir) );
+    push @{ $autoconf->{extra_preprocess_flags} }, "-I$la_incdir";
+}
+
+my $have_libarchive = $autoconf->check_header("archive.h") and $autoconf->search_libs( "archive_read_next_header", ["archive"] );
+$have_libarchive or die <<EOD;
+*******************************************
+Couldn't find libarchive, which is required
+for this module.
+
+To obtain it, go to
+    http://www.libarchive.org/
+*******************************************
+EOD
+
+my $xsfile = "Libarchive.xs";
+WriteMakefile1(
+    MIN_PERL_VERSION => '5.008001',
+    META_ADD         => {
+        'meta-spec' => { version => 2 },
+        resources   => {
+            repository => {
+                web  => 'https://github.com/rehsack/Archive-Peek-Libarchive',
+		url => 'git@github.com:rehsack/Archive-Peek-Libarchive.git',
+                type => 'git',
+            },
+            bugtracker => {
+                web    => 'http://rt.cpan.org/Public/Dist/Display.html?Name=List-MoreUtils',
+                mailto => 'list-moreutils@rt.cpan.org',
+            },
+        resources => {
+            homepage =>
+                'http://search.cpan.org/dist/Archive-Peek-Libarchive/',
+        },
+            license => 'http://dev.perl.org/licenses/',
+        },
+        prereqs => {
+            develop => {
+                requires => {
+                    'Test::CPAN::Changes'                 => 0,
+                    'Test::CheckManifest'                 => 0,
+                    'Test::Pod'                           => 0,
+                    'Test::Pod::Coverage'                 => 0,
+                    'Test::Pod::Spelling::CommonMistakes' => 0,
+                },
+            },
+            configure => {
+                requires => {%CONFIGURE_DEPS},
+            },
+            build   => { requires => {%BUILD_DEPS} },
+            test    => { requires => {%TEST_DEPS} },
+            runtime => {
+                recommends => {},
+                requires   => {
+                    %RUN_DEPS,
+                    perl => '5.8.1',
+                },
+            },
+        },
+    },
+    NAME          => 'Archive::Peek::Libarchive',
+    VERSION_FROM  => 'lib/Archive/Peek/Libarchive.pm',
+    ABSTRACT_FROM => 'lib/Archive/Peek/Libarchive.pm',
+    LICENSE       => 'perl',
+    AUTHOR        => [ 'Leon Brocard <acme@astray.com>' ],
+    XS            => { $xsfile => "Libarchive.c" },
+    OBJECT        => q/$(O_FILES)/,
+    INC           => join( " ", @{ $autoconf->{extra_preprocess_flags} } ),
+    #LDDLFLAGS   => join(" ", $Config{lddlflags}, @{$autoconf->{extra_link_flags}}),
+    EXTRALIBS      => join( " ",     @{ $autoconf->{extra_link_flags} } ),
+    LDLOADLIBS     => join( " ",     @{ $autoconf->{extra_link_flags} } ),
+    PREREQ_PM      => \%RUN_DEPS,
+    BUILD_REQUIRES => { %BUILD_DEPS, %CONFIGURE_DEPS },
+    TEST_REQUIRES  => \%TEST_DEPS,
+    clean => { FILES => "Archive-Peek-Libarchive-* *.o config.log" },
+    test  => { TESTS => 't/*.t xt/*.t' },
+);
+
+sub WriteMakefile1
+{    # originally written by Alexandr Ciornii, version 0.21. Added by eumm-upgrade.
+    my %params       = @_;
+    my $eumm_version = $ExtUtils::MakeMaker::VERSION;
+    $eumm_version = eval $eumm_version;
+    die "EXTRA_META is deprecated" if ( exists( $params{EXTRA_META} ) );
+    die "License not specified"    if ( !exists( $params{LICENSE} ) );
+    if ( $params{TEST_REQUIRES} and ( $eumm_version < 6.6303 ) )
+    {
+        if ( $params{BUILD_REQUIRES} )
+        {
+            $params{BUILD_REQUIRES} = { %{ $params{BUILD_REQUIRES} }, %{ $params{TEST_REQUIRES} } };
+        }
+        else
+        {
+            $params{BUILD_REQUIRES} = delete $params{TEST_REQUIRES};
+        }
+    }
+    if ( $params{BUILD_REQUIRES} and ( $eumm_version < 6.5503 ) )
+    {
+        #EUMM 6.5502 has problems with BUILD_REQUIRES
+        $params{PREREQ_PM} = { %{ $params{PREREQ_PM} || {} }, %{ $params{BUILD_REQUIRES} } };
+        delete $params{BUILD_REQUIRES};
+    }
+    delete $params{CONFIGURE_REQUIRES}    if ( $eumm_version < 6.52 );
+    delete $params{MIN_PERL_VERSION}      if ( $eumm_version < 6.48 );
+    delete $params{META_MERGE}            if ( $eumm_version < 6.46 );
+    delete $params{META_ADD}{prereqs}     if ( $eumm_version < 6.58 );
+    delete $params{META_ADD}{'meta-spec'} if ( $eumm_version < 6.58 );
+    delete $params{META_ADD}              if ( $eumm_version < 6.46 );
+    delete $params{LICENSE}               if ( $eumm_version < 6.31 );
+    delete $params{AUTHOR}                if ( $] < 5.005 );
+    delete $params{ABSTRACT_FROM}         if ( $] < 5.005 );
+    delete $params{BINARY_LOCATION}       if ( $] < 5.005 );
+
+    # more or less taken from Moose' Makefile.PL
+    if ( $params{CONFLICTS} )
+    {
+        my $ok = CheckConflicts(%params);
+        exit(0) if ( $params{PREREQ_FATAL} and not $ok );
+        my $cpan_smoker = grep { $_ =~ m/(?:CR_SMOKER|CPAN_REPORTER|AUTOMATED_TESTING)/ } keys %ENV;
+        unless ( $cpan_smoker || $ENV{PERL_MM_USE_DEFAULT} || $ENV{SQL_STATEMENT_WARN_UPDATE} )
+        {
+            sleep 4 unless ($ok);
+        }
+        delete $params{CONFLICTS};
+    }
+
+    WriteMakefile(%params);
+}

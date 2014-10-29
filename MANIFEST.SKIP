@@ -6,6 +6,7 @@
 \.gitignore
 blib/
 Archive-Peek-Libarchive-.*
+Libarchive.bs
 Makefile$
 Makefile.old
 ^Build$

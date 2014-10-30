@@ -31,11 +31,6 @@ my %TEST_DEPS = (
 my $autoconf = Config::AutoConf->new();
 my @epf = @{ $autoconf->{extra_preprocess_flags} };
 $autoconf->pkg_config_package_flags( "libarchive" );
-if( scalar @{ $autoconf->{extra_preprocess_flags} } == scalar @epf )
-{
-    my $la_incdir = Config::AutoConf::_pkg_config_flag( qw(libarchive --variable includedir) );
-    push @{ $autoconf->{extra_preprocess_flags} }, "-I$la_incdir";
-}
 
 my $have_libarchive = $autoconf->check_header("archive.h") and $autoconf->search_libs( "archive_read_next_header", ["archive"] );
 $have_libarchive or die <<EOD;

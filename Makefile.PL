@@ -32,7 +32,7 @@ my $autoconf = Config::AutoConf->new();
 my @epf = @{ $autoconf->{extra_preprocess_flags} };
 $autoconf->pkg_config_package_flags( "libarchive" );
 
-my $have_libarchive = $autoconf->check_header("archive.h") and $autoconf->search_libs( "archive_read_next_header", ["archive"] );
+my $have_libarchive = $autoconf->check_header("archive.h") and $autoconf->search_libs( "archive_read_open_filename", ["archive"] );
 $have_libarchive or die <<EOD;
 *******************************************
 Couldn't find libarchive, which is required

@@ -1,5 +1,12 @@
 Revision history for Perl module Archive::Peek::Libarchive:
 
+0.38	2018-11-07
+    - remove unused, depreciated Devel::CheckLib bundle
+    - update ppport.h to 3.40
+    - remove depreciated library calls and legacy libarchive
+    - adopt build infrastructure
+    - fix pod errors
+
 0.37	2011-10-09 10:53 BST
      - add iterate method
      - add search_cpan.pl example

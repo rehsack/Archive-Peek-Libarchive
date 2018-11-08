@@ -53,7 +53,7 @@ Archive::Peek::Libarchive - Peek into archives without extracting them (using li
 =head1 DESCRIPTION
 
 This module lets you peek into archives without extracting them. This is
-a wrapper to the libarchive C library (http://code.google.com/p/libarchive/),
+a wrapper to the libarchive C library (https://github.com/libarchive/libarchive#readme),
 which you must have installed (libarchive-dev package for Debian/Ubuntu).
 It supports many different archive formats and compression algorithms and
 is fast.
